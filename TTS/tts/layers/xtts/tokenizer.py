@@ -3,10 +3,8 @@ import re
 import textwrap
 from functools import cached_property
 
-import pypinyin
 import torch
-from hangul_romanize import Transliter
-from hangul_romanize.rule import academic
+
 from num2words import num2words
 from spacy.lang.ar import Arabic
 from spacy.lang.en import English
@@ -15,7 +13,6 @@ from spacy.lang.ja import Japanese
 from spacy.lang.zh import Chinese
 from tokenizers import Tokenizer
 
-from TTS.tts.layers.xtts.zh_num2words import TextNorm as zh_num2words
 
 
 def get_spacy_lang(lang):
@@ -521,7 +518,7 @@ def _expand_number(m, lang="en"):
 
 def expand_numbers_multilingual(text, lang="en"):
     if lang == "zh":
-        text = zh_num2words()(text)
+        text = text
     else:
         if lang in ["en", "ru"]:
             text = re.sub(_comma_number_re, _remove_commas, text)
@@ -569,10 +566,7 @@ def basic_cleaners(text):
     return text
 
 
-def chinese_transliterate(text):
-    return "".join(
-        [p[0] for p in pypinyin.pinyin(text, style=pypinyin.Style.TONE3, heteronym=False, neutral_tone_with_five=True)]
-    )
+
 
 
 def japanese_cleaners(text, katsu):
@@ -581,9 +575,7 @@ def japanese_cleaners(text, katsu):
     return text
 
 
-def korean_transliterate(text):
-    r = Transliter(academic)
-    return r.translit(text)
+
 
 
 DEFAULT_VOCAB_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../data/tokenizer.json")
